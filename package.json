@@ -1,0 +1,11 @@
+{
+  "name": "profitx-worksheets",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ProfitX lead magnets: one base site, one page per worksheet (/golden-retainer, ...). Name + email -> Kit -> instant access.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/dev.mjs"
+  },
+  "engines": { "node": "20.x || 22.x || 24.x" }
+}

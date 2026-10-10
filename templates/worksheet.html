@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{head}}
+<title>{{title}} | ProfitX</title>
+<meta name="description" content="{{sub}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{sub}}">
+<meta property="og:type" content="website">
+</head>
+<body>
+<main class="screen">
+  <a class="brand" href="/">{{logo}}<b>Profit<span>X</span></b></a>
+  <div class="center">
+    <header>
+      <p class="eyebrow">{{eyebrow}}</p>
+      <h1>{{headline}}</h1>
+      <p class="sub">{{sub}}</p>
+    </header>
+
+    <div class="card">
+      <form id="form" novalidate>
+        <label class="field"><span>First name</span><input name="name" autocomplete="given-name" required></label>
+        <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" required></label>
+        <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
+        <button class="cta" type="submit">{{button}} <span class="arr">→</span></button>
+        <p class="err" id="err" role="alert" hidden></p>
+        <p class="fine">Instant access. No spam, unsubscribe anytime.</p>
+      </form>
+      <div class="done" id="done" hidden>
+        <h2>You're in<span id="who"></span> 🎉</h2>
+        <p>Your worksheet is ready. Open it, duplicate it into your own Notion and work through it step by step.</p>
+        <a class="cta" id="open" href="#" target="_blank" rel="noopener">Open the worksheet <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var slug = {{slugJson}};
+  var form = document.getElementById("form"), err = document.getElementById("err");
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    var d = Object.fromEntries(new FormData(form));
+    err.hidden = true;
+    if (!d.name.trim()) return show("Pop your first name in.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) return show("That email doesn't look right.");
+    var btn = form.querySelector("button"); btn.disabled = true;
+    try {
+      var r = await fetch("/api/subscribe", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(Object.assign(d, { slug: slug })) });
+      var out = await r.json();
+      if (!out.ok) throw new Error(out.error || "failed");
+      document.getElementById("who").textContent = ", " + d.name.trim().split(" ")[0];
+      document.getElementById("open").href = out.url;
+      form.hidden = true; document.getElementById("done").hidden = false;
+    } catch (_) {
+      show("Something went wrong. Please try again."); btn.disabled = false;
+    }
+  });
+  function show(m){ err.textContent = m; err.hidden = false; }
+})();
+</script>
+</body>
+</html>
