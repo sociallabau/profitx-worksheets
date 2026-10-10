@@ -26,9 +26,17 @@ Add an entry to `worksheets.json` and push. That's it.
 - `accessUrl`: the Notion (or any) link they get after signing up; it's never in the page HTML
 - `kitTag`: created in Kit automatically on the first signup, so you can trigger a Kit automation off it
 
+## Site-wide settings (`site.json`)
+
+- `pixelId`: Meta Pixel. PageView on every page, Lead on signup (deduped with CAPI by event id)
+- `vsl`: the "Want to see how the full system works?" link under the download button.
+  A worksheet can override it with its own `"vsl": { "text", "label", "url" }`
+
 ## Setup
 
-- Vercel env var: `KIT_API_KEY` (Kit > Settings > Developer > v4 API key)
+- Vercel env vars: `KIT_API_KEY` (Kit > Settings > Developer > v4 API key),
+  `META_CAPI_TOKEN` (Meta Events Manager > Settings > Conversions API > Generate access token).
+  Optional `META_TEST_EVENT_CODE` to see CAPI events in Events Manager's Test Events tab.
 - Signups are also logged as `SIGNUP` in the Vercel function logs
 
 ## Local preview

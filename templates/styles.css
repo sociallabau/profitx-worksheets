@@ -48,3 +48,6 @@ h1 .v{color:var(--violet)}
 .list a{display:block;background:var(--white);border-radius:12px;padding:16px 18px;color:var(--purple);text-decoration:none;font-weight:800;text-align:left}
 .list a:hover{box-shadow:0 0 0 2px var(--violet)}
 .list small{display:block;font-weight:500;color:var(--muted)}
+.vsl{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--lilac);font-size:14px;color:var(--body)}
+.vsl a{display:inline-block;margin-top:2px;color:var(--violet);font-weight:700;text-decoration:none}
+.vsl a:hover{text-decoration:underline}

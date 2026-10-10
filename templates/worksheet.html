@@ -31,10 +31,12 @@
         <h2>You're in<span id="who"></span> 🎉</h2>
         <p>Your worksheet is ready. Open it, duplicate it into your own Notion and work through it step by step.</p>
         <a class="cta" id="open" href="#" target="_blank" rel="noopener">Open the worksheet <span class="arr">→</span></a>
+        {{vsl}}
       </div>
     </div>
   </div>
 </main>
+{{pixel}}
 <script>
 (function(){
   var slug = {{slugJson}};
@@ -46,10 +48,14 @@
     if (!d.name.trim()) return show("Pop your first name in.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) return show("That email doesn't look right.");
     var btn = form.querySelector("button"); btn.disabled = true;
+    // Same id goes to the pixel and to CAPI (server), so Meta counts one lead, not two.
+    var eventId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2);
     try {
-      var r = await fetch("/api/subscribe", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(Object.assign(d, { slug: slug })) });
+      var r = await fetch("/api/subscribe", { method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(Object.assign(d, { slug: slug, eventId: eventId, sourceUrl: location.href.split("#")[0] })) });
       var out = await r.json();
       if (!out.ok) throw new Error(out.error || "failed");
+      if (window.fbq) fbq("track", "Lead", { content_name: document.title.split(" | ")[0] }, { eventID: eventId });
       document.getElementById("who").textContent = ", " + d.name.trim().split(" ")[0];
       document.getElementById("open").href = out.url;
       form.hidden = true; document.getElementById("done").hidden = false;

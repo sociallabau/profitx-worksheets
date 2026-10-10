@@ -2,10 +2,11 @@
 // Returns the worksheet link so the page can unlock it straight away. The link only lives
 // here and in worksheets.json, never in the page HTML.
 //
-// Env: KIT_API_KEY (Kit > Settings > Developer > API keys, v4). Every signup is also logged
-// as SIGNUP in the Vercel function logs.
+// Env: KIT_API_KEY (Kit > Settings > Developer > API keys, v4), META_CAPI_TOKEN (Meta Lead via
+// Conversions API). Every signup is also logged as SIGNUP in the Vercel function logs.
 const worksheets = require("../worksheets.json");
 const { upsertSubscriber, tagByName } = require("./_lib/kit");
+const { sendLead } = require("./_lib/meta");
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -31,5 +32,8 @@ module.exports = async function handler(req, res) {
     // Never block the download because Kit hiccuped. The SIGNUP log line has their details.
     console.error("subscribe: kit error", e);
   }
+  const eventId = String(body.eventId || "").slice(0, 80);
+  const sourceUrl = String(body.sourceUrl || "").slice(0, 500);
+  await sendLead(req, { email, name, eventId, sourceUrl, worksheet: sheet.title });
   return res.status(200).json({ ok: true, url: sheet.accessUrl });
 };
