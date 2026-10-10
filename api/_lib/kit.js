@@ -2,14 +2,15 @@
 const BASE = "https://api.kit.com/v4";
 
 async function kit(path, body) {
-  const key = process.env.KIT_API_KEY;
-  if (!key) return null;
+  const key = process.env.KIT_API_KEY || process.env.kit_api_key;
+  if (!key) { console.error("Kit: KIT_API_KEY is not set, skipping", path); return null; }
   const res = await fetch(BASE + path, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Kit-Api-Key": key },
     body: JSON.stringify(body),
   });
   const text = await res.text();
+  console.log("Kit", path, res.status);
   if (!res.ok) {
     console.error("Kit", path, res.status, text.slice(0, 300));
     return null;
