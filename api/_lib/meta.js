@@ -8,7 +8,7 @@ const sha = (v) => crypto.createHash("sha256").update(String(v)).digest("hex");
 const cookie = (req, name) => (req.headers.cookie || "").split(/;\s*/).find((c) => c.startsWith(name + "="))?.slice(name.length + 1);
 
 async function sendLead(req, { email, name, eventId, sourceUrl, worksheet }) {
-  const pixel = process.env.META_PIXEL_ID || site.pixelId, token = process.env.META_CAPI_TOKEN;
+  const pixel = process.env.META_PIXEL_ID || site.pixelId, token = process.env.META_CAPI_TOKEN || process.env.meta_capi_token;
   if (!pixel || !token) return;
   const first = name.toLowerCase().split(/\s+/)[0];
   const event = {
